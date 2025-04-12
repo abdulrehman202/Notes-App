@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 import 'package:recalling_code/Note.dart';
+import 'package:recalling_code/edit_screen.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   final _notesStreamController = StreamController<List<Note>>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
+  final TextEditingController _filterController = TextEditingController();
   
   List<Color> colors= 
   [
@@ -94,10 +95,20 @@ class _HomePageState extends State<HomePage> {
       child: const Icon(Icons.add,color: Colors.white, ),
       ),
       appBar: AppBar(title: searchMode?TextField(
+        controller: _filterController,
         
+        onChanged: (value)
+        {
+          List<Note> filteredList = [];
+          _notesStreamController.sink.add(filteredList);
+          filteredList.addAll(_notesList.where((test)=>test.title.toLowerCase().contains(value.toLowerCase())).toList());
+          _notesStreamController.add(filteredList);
+        },
         cursorColor: Colors.white,
+        
         decoration: InputDecoration(
           suffix: IconButton(onPressed: (){setState(() {
+            _notesStreamController.add(_notesList);
         searchMode = false;
       });}, icon: const Icon(Icons.close,color: Colors.white,)),hintText: 'Search Title', border: InputBorder.none, hintStyle: const TextStyle(color: Colors.white)),):const Text("Memo App"), actions: searchMode?[]:[
         IconButton(onPressed: (){
@@ -124,30 +135,31 @@ class _HomePageState extends State<HomePage> {
                 List<Note> tempList = snapshot.data?.toList() ??[];
                 return tempList.isNotEmpty? ListView.builder(itemCount: tempList.length,itemBuilder: (context, index)
                 {
-                  return Container(
-                    padding: const EdgeInsets.all(10.0),
-                    margin: const EdgeInsets.all(10.0),
-                    constraints: const BoxConstraints(minHeight: 100),
-                    decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    color: colors[tempList[index].color], ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(tempList[index].title,style: Theme.of(context).textTheme.displaySmall!.copyWith(fontWeight: FontWeight.bold,color: Colors.black, fontSize: 20),),
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: ReadMoreText(
-                            tempList[index].text,
-                            trimMode: TrimMode.Line,
-                            trimLines: 2,
-                            colorClickableText: Colors.pink,
-                            trimCollapsedText: 'Show more',
-                            trimExpandedText: ' Show less',
-                            moreStyle: Theme.of(context).textTheme.displaySmall!.copyWith(fontWeight: FontWeight.bold,color: Colors.black, fontSize: 15),
-                            lessStyle: Theme.of(context).textTheme.displaySmall!.copyWith(fontWeight: FontWeight.bold,color: Colors.black, fontSize: 15),
+                  return GestureDetector(
+                    onTap: () {
+                      
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>EditScreen(heading: tempList[index].title, note: tempList[index].text)));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      margin: const EdgeInsets.all(10.0),
+                      constraints: const BoxConstraints(minHeight: 100),
+                      decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      color: colors[tempList[index].color], ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(tempList[index].title,style: Theme.of(context).textTheme.displaySmall!.copyWith(fontWeight: FontWeight.bold,color: Colors.black, fontSize: 20),),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              tempList[index].text,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },) :Container(child: Text('No data to show'),);

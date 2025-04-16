@@ -37,11 +37,11 @@ class _EditScreenState extends State<EditScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               EditableText(minLines: 1,
-               maxLines: 3, controller: _headingEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 35, fontWeight: FontWeight.bold, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode,),
+               maxLines: 1000, controller: _headingEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 35, fontWeight: FontWeight.bold, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode,),
               const Divider(color: Color.fromARGB(85, 224, 224, 224),),
-              Expanded(child: EditableText(controller: _noteEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 35,), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode2,),
-              ),
-          
+              EditableText(minLines: 1,
+               maxLines: 1000, controller: _noteEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 30, fontWeight: FontWeight.normal, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode2,),
+              
             ],
           ),
         ),

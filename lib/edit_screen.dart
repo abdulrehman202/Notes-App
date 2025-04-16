@@ -11,12 +11,22 @@ class EditScreen extends StatefulWidget {
 }
 
 class _EditScreenState extends State<EditScreen> {
-  TextEditingController _headingEditControlller = TextEditingController();
-  TextEditingController _noteEditControlller = TextEditingController();
-  FocusNode _focusNode = FocusNode(
+  final TextEditingController _headingEditControlller = TextEditingController();
+  final TextEditingController _noteEditControlller = TextEditingController();
+  final FocusNode _focusNode = FocusNode(
   );
-  FocusNode _focusNode2 = FocusNode(
+  final FocusNode _focusNode2 = FocusNode(
   );
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _headingEditControlller.dispose();
+    _noteEditControlller.dispose();
+    _focusNode.dispose();
+    _focusNode2.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +43,18 @@ class _EditScreenState extends State<EditScreen> {
       body: SafeArea(
         child: Container(
           margin: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              EditableText(minLines: 1,
-               maxLines: 1000, controller: _headingEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 35, fontWeight: FontWeight.bold, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode,),
-              const Divider(color: Color.fromARGB(85, 224, 224, 224),),
-              EditableText(minLines: 1,
-               maxLines: 1000, controller: _noteEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 30, fontWeight: FontWeight.normal, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode2,),
-              
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                EditableText(minLines: 1,
+                 maxLines: 1000, controller: _headingEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 35, fontWeight: FontWeight.bold, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode,),
+                const Divider(color: Color.fromARGB(85, 224, 224, 224),),
+                EditableText(minLines: 1,
+                 maxLines: 1000, controller: _noteEditControlller, style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 30, fontWeight: FontWeight.normal, ), cursorColor: Colors.white, backgroundCursorColor: Colors.white, focusNode: _focusNode2,),
+                
+              ],
+            ),
           ),
         ),
       ),

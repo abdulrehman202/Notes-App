@@ -32,6 +32,8 @@ class _HomePageState extends State<HomePage> {
     const Color(0xffB69CFF),
   ];
 
+  FocusNode _focusNode = FocusNode();
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -120,6 +122,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: searchMode
             ? TextField(
+              focusNode: _focusNode,
                 controller: _filterController,
                 onChanged: (value) {
                   List<Note> filteredList = [];
@@ -132,6 +135,7 @@ class _HomePageState extends State<HomePage> {
                   _notesStreamController.add(filteredList);
                 },
                 cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                     suffix: IconButton(
                         onPressed: () {
@@ -155,6 +159,8 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                     onPressed: () {
                       setState(() {
+                        _focusNode.requestFocus();
+                        _filterController.clear();
                         searchMode = true;
                       });
                     },

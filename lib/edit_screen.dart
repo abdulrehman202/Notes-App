@@ -75,14 +75,10 @@ class _EditScreenState extends State<EditScreen> {
                 ),
                 TextField(
                   contextMenuBuilder: (context, editableTextState) {
-                    final List<ContextMenuButtonItem> buttonItems =
-                        editableTextState.contextMenuButtonItems;
-                    buttonItems.removeWhere((ContextMenuButtonItem buttonItem) {
-                      return buttonItem.type == ContextMenuButtonType.cut;
-                    });
+                    
                     return AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: editableTextState.contextMenuAnchors,
-                      buttonItems: buttonItems,
+                      buttonItems: editableTextState.contextMenuButtonItems,
                     );
                   },
                   minLines: 1,

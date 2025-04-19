@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:recalling_code/Note.dart';
+import 'package:recalling_code/db_controller.dart';
 import 'package:recalling_code/edit_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Note sampleNote = Note('This is my intro that I use everywhere','My name is Abdul Rehman but I am a software engineer by profession. Currently employed at ZOA energy solutions as retrofit assessor. ',0);
+  Note sampleNote = Note('','This is my intro that I use everywhere','My name is Abdul Rehman but I am a software engineer by profession. Currently employed at ZOA energy solutions as retrofit assessor. ',0);
   bool searchMode = false;
   final List<Note> _notesList = [
   ];
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _filterController = TextEditingController();
+  DBController _dbController = DBController();
 
   List<Color> colors = [
     const Color(0xffFD99FF),
@@ -44,11 +46,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     final _stream = _notesStreamController.stream;
     _notesList.clear();
-    _notesList.add(
-    sampleNote
-  );
+  
+
     _notesStreamController.sink.add(_notesList);
 
     return Scaffold(
@@ -93,12 +95,16 @@ class _HomePageState extends State<HomePage> {
                                           hintMaxLines: 20),
                                     )),
                                 FilledButton(
-                                    onPressed: () {
-                                      _notesList.add(Note(
+                                    onPressed: () async {
+                                      Note note = Note(
+                                        '-1',
                                           _titleController.text,
                                           _textController.text,
-                                          Random().nextInt(6)));
-                                      _notesStreamController.add(_notesList);
+                                          Random().nextInt(6));
+                                         await _dbController.insert(note);
+                                         setState(() {
+                                           
+                                         });
                                       _titleController.clear();
                                       _textController.clear();
                                       Navigator.pop(context);
@@ -135,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                   _notesStreamController.add(filteredList);
                 },
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                     suffix: IconButton(
                         onPressed: () {
@@ -180,68 +186,80 @@ class _HomePageState extends State<HomePage> {
                     icon: const Icon(Icons.info_outline_rounded)),
               ],
       ),
-      body: StreamBuilder<List<Note>>(
-        stream: _stream,
-        builder: (context, snapshot) {
-          List<Note> tempList = snapshot.data?.toList() ?? [];
-          return tempList.isNotEmpty
-              ? ListView.builder(
-                  itemCount: tempList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditScreen(
-                                    heading: tempList[index].title,
-                                    note: tempList[index].text)));
+      body: FutureBuilder(
+        future: _dbController.fetchAllNotes(),
+        builder: (context, AsyncSnapshot<List<Note>> snapshot) {
+          _notesList.clear();
+          _notesList.addAll(snapshot.data??[]);
+          switch (snapshot.connectionState){
+          
+          case ConnectionState.waiting: const Center(child: CircularProgressIndicator( color: Colors.white,));
+          default: _notesStreamController.add(snapshot.data??[]);}
+
+          return StreamBuilder<List<Note>>(
+            stream: _stream,
+            builder: (context, snapshot) {
+              List<Note> tempList = snapshot.data?.toList() ?? [];
+              return tempList.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: tempList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditScreen(
+                                        heading: tempList[index].title,
+                                        note: tempList[index].text)));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10.0),
+                            margin: const EdgeInsets.all(10.0),
+                            constraints: const BoxConstraints(minHeight: 100),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10)),
+                              color: colors[tempList[index].color],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  tempList[index].title,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 20),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 10),
+                                  child: ReadMoreText(
+                                    tempList[index].text,
+                                    trimMode: TrimMode.Line,
+                                    trimLines: 2,
+                                    colorClickableText: Colors.pink,
+                                    trimCollapsedText: 'Show more',
+                                    trimExpandedText: 'Show less',
+                                    moreStyle: const TextStyle(
+                                        fontSize: 14, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        margin: const EdgeInsets.all(10.0),
-                        constraints: const BoxConstraints(minHeight: 100),
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          color: colors[tempList[index].color],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              tempList[index].title,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      fontSize: 20),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.symmetric(vertical: 10),
-                              child: ReadMoreText(
-                                tempList[index].text,
-                                trimMode: TrimMode.Line,
-                                trimLines: 2,
-                                colorClickableText: Colors.pink,
-                                trimCollapsedText: 'Show more',
-                                trimExpandedText: 'Show less',
-                                moreStyle: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    )
+                  : Container(
+                      child: const Text('No data to show'),
                     );
-                  },
-                )
-              : Container(
-                  child: Text('No data to show'),
-                );
-        },
+            },
+          );
+        }
       ),
     );
   }

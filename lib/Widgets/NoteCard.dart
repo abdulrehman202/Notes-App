@@ -5,7 +5,7 @@ import 'package:recalling_code/constants.dart';
 
 class NoteCard extends StatelessWidget {
   Note note;
-  NoteCard({super.key,required this.note});
+   NoteCard({super.key,required this.note});
 
   @override
   Widget build(BuildContext context) {

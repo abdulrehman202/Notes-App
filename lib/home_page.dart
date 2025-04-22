@@ -179,12 +179,13 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) {
               List<Note> tempList = snapshot.data?.toList() ?? [];
               return tempList.isNotEmpty
-                  ? ListView.builder(
+                  ?  ListView.builder(
+                    
                       itemCount: tempList.length,
                       itemBuilder: (context, index) {
-                        return GestureDetector(
+                        return  GestureDetector(
                           onLongPress: () async {
-                           await showDialog(context: context, builder: (context)=>ConfirmationDialog(msg: 'DO you want to delete this note?', yesCB: (){_dbController.deleteNote(tempList[index]);Navigator.pop(context);}, noCB: (){Navigator.of(context);}));
+                           await showDialog(context: context, builder: (context)=>ConfirmationDialog(msg: 'Do you want to delete this note?', yesCB: (){_dbController.deleteNote(tempList[index]);Navigator.pop(context);}, noCB: (){Navigator.pop(context);}));
                           setState(() {
                             
                           });
@@ -203,9 +204,16 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     )
-                  : Container(
-                      child: const Text('No data to show'),
-                    );
+                  : Center(child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/empty.png'),
+                    Text(
+              'No Note found!',
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+                    ],
+                  ),);
             },
           );
         }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recalling_code/Widgets/DialogContainer.dart';
 import 'package:recalling_code/db_controller.dart';
 
 import 'Note.dart';
@@ -17,6 +18,7 @@ class _EditScreenState extends State<EditScreen> {
   final TextEditingController _noteEditControlller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
+  bool _isCHanged = false;
 
   @override
   void dispose() {
@@ -33,14 +35,25 @@ class _EditScreenState extends State<EditScreen> {
     _headingEditControlller.text = widget.note.title;
     _noteEditControlller.text = widget.note.text;
     return Scaffold(
-      bottomNavigationBar: FilledButton(onPressed: (){
-        DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);});
-      
-      }, child: Text('Update')),
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+
+              if(_isCHanged) {
+                showDialog(context: context, builder: (context)=> DialogContainer(dialogContent: [
+                Text('Do you want to save changes?'),
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [FilledButton(onPressed: (){ 
+                  DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);Navigator.pop(context);});
+
+                }, child: Text('Yes')),FilledButton(onPressed: (){
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }, child: Text('No')),],)
+
+              ]));
+              
+              }
+              else Navigator.pop(context);
             },
             icon: const Icon(
               Icons.backspace_outlined,
@@ -55,15 +68,12 @@ class _EditScreenState extends State<EditScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
+                  onChanged: (value) => _isCHanged = true,
                   contextMenuBuilder: (context, editableTextState) {
-                    final List<ContextMenuButtonItem> buttonItems =
-                        editableTextState.contextMenuButtonItems;
-                    buttonItems.removeWhere((ContextMenuButtonItem buttonItem) {
-                      return buttonItem.type == ContextMenuButtonType.cut;
-                    });
+                    
                     return AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: editableTextState.contextMenuAnchors,
-                      buttonItems: buttonItems,
+                      buttonItems: editableTextState.contextMenuButtonItems,
                     );
                   },
                   minLines: 1,
@@ -81,6 +91,7 @@ class _EditScreenState extends State<EditScreen> {
                   color: Color.fromARGB(85, 224, 224, 224),
                 ),
                 TextField(
+                  onChanged: (value) => _isCHanged = true,
                   contextMenuBuilder: (context, editableTextState) {
                     
                     return AdaptiveTextSelectionToolbar.buttonItems(

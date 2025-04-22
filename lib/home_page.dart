@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:recalling_code/Note.dart';
+import 'package:recalling_code/Widgets/DialogContainer.dart';
+import 'package:recalling_code/Widgets/NoteCard.dart';
 import 'package:recalling_code/db_controller.dart';
 import 'package:recalling_code/edit_screen.dart';
 
@@ -15,7 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Note sampleNote = Note('','This is my intro that I use everywhere','My name is Abdul Rehman but I am a software engineer by profession. Currently employed at ZOA energy solutions as retrofit assessor. ',0);
   bool searchMode = false;
   final List<Note> _notesList = [
   ];
@@ -23,18 +24,9 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _filterController = TextEditingController();
-  DBController _dbController = DBController();
+  final DBController _dbController = DBController();
 
-  List<Color> colors = [
-    const Color(0xffFD99FF),
-    const Color(0xffFF9E9E),
-    const Color(0xff91F48F),
-    const Color(0xffFFF599),
-    const Color(0xff9EFFFF),
-    const Color(0xffB69CFF),
-  ];
-
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
@@ -44,33 +36,9 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    
-    final _stream = _notesStreamController.stream;
-    _notesList.clear();
-  
-
-    _notesStreamController.sink.add(_notesList);
-
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return Center(
-                  child: Wrap(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(20),
-                            
-                        child: Card(
-                          child: Container(
-                            margin: const EdgeInsets.all(20),
-                            child: Column(
-                              children: [
-                                TextField(
+  Widget newNoteDialog()
+  {
+    return DialogContainer(dialogContent: [TextField(
                                   controller: _titleController,
                                   decoration: const InputDecoration(
                                     label: Text(
@@ -109,15 +77,24 @@ class _HomePageState extends State<HomePage> {
                                       _textController.clear();
                                       Navigator.pop(context);
                                     },
-                                    child: const Text('Add note'))
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                                    child: const Text('Add note'))]);
+                  
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    
+    final _stream = _notesStreamController.stream;
+    _notesList.clear();
+    _notesStreamController.sink.add(_notesList);
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return newNoteDialog();
               });
         },
         child: const Icon(
@@ -187,7 +164,7 @@ class _HomePageState extends State<HomePage> {
               ],
       ),
       body: FutureBuilder(
-        future: _dbController.fetchAllNotes(),
+        future: _dbController.fetchAllNotes(), 
         builder: (context, AsyncSnapshot<List<Note>> snapshot) {
           _notesList.clear();
           _notesList.addAll(snapshot.data??[]);
@@ -215,44 +192,7 @@ class _HomePageState extends State<HomePage> {
                                       
                                     });
                           },
-                          child: Container(
-                            padding: const EdgeInsets.all(10.0),
-                            margin: const EdgeInsets.all(10.0),
-                            constraints: const BoxConstraints(minHeight: 100),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              color: colors[tempList[index].color],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  tempList[index].title,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displaySmall!
-                                      .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: 20),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 10),
-                                  child: ReadMoreText(
-                                    tempList[index].text,
-                                    trimMode: TrimMode.Line,
-                                    trimLines: 2,
-                                    colorClickableText: Colors.pink,
-                                    trimCollapsedText: 'Show more',
-                                    trimExpandedText: 'Show less',
-                                    moreStyle: const TextStyle(
-                                        fontSize: 14, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          child: NoteCard(note: tempList[index]),
                         );
                       },
                     )

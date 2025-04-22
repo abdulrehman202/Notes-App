@@ -30,6 +30,17 @@ class _EditScreenState extends State<EditScreen> {
     super.dispose();
   }
 
+  Widget _YesNoButton(String txt, VoidCallback doThis, Color color)
+  {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+      ),
+      height: 50,
+      child: TextButton(onPressed: doThis, child: Text(txt, style: TextStyle(color: Colors.black),)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _headingEditControlller.text = widget.note.title;
@@ -42,13 +53,18 @@ class _EditScreenState extends State<EditScreen> {
               if(_isCHanged) {
                 showDialog(context: context, builder: (context)=> DialogContainer(dialogContent: [
                 Text('Do you want to save changes?'),
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [FilledButton(onPressed: (){ 
-                  DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);Navigator.pop(context);});
-
-                }, child: Text('Yes')),FilledButton(onPressed: (){
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                }, child: Text('No')),],)
+                SizedBox(height: 50,),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [Expanded(
+                  child: _YesNoButton('Yes',(){ 
+                    DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);Navigator.pop(context);});
+                  
+                  },const Color.fromARGB(255, 142, 248, 145)),
+                ),Expanded(
+                  child: _YesNoButton('No',(){
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  }, const Color.fromARGB(255, 252, 138, 130)),
+                )],)
 
               ]));
               

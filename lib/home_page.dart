@@ -185,10 +185,10 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         return  GestureDetector(
                           onLongPress: () async {
-                           await showDialog(context: context, builder: (context)=>ConfirmationDialog(msg: 'Do you want to delete this note?', yesCB: (){_dbController.deleteNote(tempList[index]);Navigator.pop(context);}, noCB: (){Navigator.pop(context);}));
-                          setState(() {
+                           await showDialog(context: context, builder: (context)=>ConfirmationDialog(msg: 'Do you want to delete this note?', yesCB: (){_dbController.deleteNote(tempList[index]);_filterController.clear(); searchMode = false; Navigator.pop(context);setState(() {
                             
-                          });
+                          });}, noCB: (){Navigator.pop(context);}));
+                          
                           },
                           onTap: () async {
                             await Navigator.push(

@@ -67,4 +67,16 @@ class DBController {
       return false;
     }
   }
+
+  Future<bool> deleteNote(Note note) async{
+    try{
+      final collection = await db?.collection('notes collection');
+
+      await collection?.deleteOne({'_id':ObjectId.parse(note.id)});
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
 }

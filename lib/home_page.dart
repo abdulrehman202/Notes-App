@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:recalling_code/Note.dart';
+import 'package:recalling_code/Widgets/ConfirmationDialog.dart';
 import 'package:recalling_code/Widgets/DialogContainer.dart';
 import 'package:recalling_code/Widgets/NoteCard.dart';
 import 'package:recalling_code/db_controller.dart';
@@ -182,6 +183,12 @@ class _HomePageState extends State<HomePage> {
                       itemCount: tempList.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
+                          onLongPress: () async {
+                           await showDialog(context: context, builder: (context)=>ConfirmationDialog(msg: 'DO you want to delete this note?', yesCB: (){_dbController.deleteNote(tempList[index]);Navigator.pop(context);}, noCB: (){Navigator.of(context);}));
+                          setState(() {
+                            
+                          });
+                          },
                           onTap: () async {
                             await Navigator.push(
                                 context,

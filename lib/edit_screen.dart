@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recalling_code/Widgets/ConfirmationDialog.dart';
 import 'package:recalling_code/Widgets/DialogContainer.dart';
 import 'package:recalling_code/db_controller.dart';
 
@@ -51,22 +52,11 @@ class _EditScreenState extends State<EditScreen> {
             onPressed: () {
 
               if(_isCHanged) {
-                showDialog(context: context, builder: (context)=> DialogContainer(dialogContent: [
-                Text('Do you want to save changes?'),
-                SizedBox(height: 50,),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [Expanded(
-                  child: _YesNoButton('Yes',(){ 
-                    DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);Navigator.pop(context);});
-                  
-                  },const Color.fromARGB(255, 142, 248, 145)),
-                ),Expanded(
-                  child: _YesNoButton('No',(){
+                showDialog(context: context, builder: (context)=> ConfirmationDialog(msg:'Do you want to save changes?', yesCB: (){DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);Navigator.pop(context);});},
+noCB: (){
                     Navigator.pop(context);
                     Navigator.pop(context);
-                  }, const Color.fromARGB(255, 252, 138, 130)),
-                )],)
-
-              ]));
+                  }));
               
               }
               else Navigator.pop(context);

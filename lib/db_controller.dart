@@ -9,7 +9,9 @@ class DBController {
       db = await Db.create(
           'mongodb+srv://user:user123@cluster0.cfknulu.mongodb.net/Notes');
       await db!.open();
-    } catch (e) {}
+    } catch (e) {
+      print('connection failed');
+    }
   }
 
   Future<bool> insert(Note note) async {
@@ -44,6 +46,25 @@ class DBController {
 
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<bool> updateNote(Note note) async{
+    try{
+      final collection = await db?.collection('notes collection');
+
+      final documentToUpdate = {'\$set':{
+        'id':note.id,
+        'title': note.title,
+        'text': note.text,
+        'color': note.color,
+      }};
+
+      await collection?.updateOne({'_id':ObjectId.parse(note.id)},documentToUpdate,upsert: false);
+      return true;
+    }
+    catch(e){
+      return false;
     }
   }
 }

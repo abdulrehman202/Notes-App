@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:recalling_code/db_controller.dart';
+
+import 'Note.dart';
 
 class EditScreen extends StatefulWidget {
-  String heading, note;
+  Note note;
 
-  EditScreen({super.key, required this.heading, required this.note});
+  EditScreen({super.key, required this.note});
 
   @override
   State<EditScreen> createState() => _EditScreenState();
@@ -27,9 +30,13 @@ class _EditScreenState extends State<EditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _headingEditControlller.text = widget.heading;
-    _noteEditControlller.text = widget.note;
+    _headingEditControlller.text = widget.note.title;
+    _noteEditControlller.text = widget.note.text;
     return Scaffold(
+      bottomNavigationBar: FilledButton(onPressed: (){
+        DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);});
+      
+      }, child: Text('Update')),
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {

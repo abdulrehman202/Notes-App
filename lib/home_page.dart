@@ -205,13 +205,15 @@ class _HomePageState extends State<HomePage> {
                       itemCount: tempList.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditScreen(
-                                        heading: tempList[index].title,
-                                        note: tempList[index].text)));
+                                    builder: (context) => EditScreen(note:tempList[index])))
+                                    ;
+                                    setState(() {
+                                      
+                                    });
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10.0),

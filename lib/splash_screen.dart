@@ -1,8 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:recalling_code/db_controller.dart';
 
+import 'db_controller.dart';
 import 'home_page.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -11,15 +9,46 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   @override
   void initState() {
     super.initState();
-    DBController.connect().whenComplete((){Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));});
-    // Timer(
-    //     const Duration(seconds: 3),
-    //     () => Navigator.pushReplacement(
-    //         context, MaterialPageRoute(builder: (context) => HomePage())));
+    tryToConnect();
+  }
+
+  tryToConnect() async
+  {
+    try{
+    await DBController().connect().then((response){
+
+      switch(response['code']){
+        case 200:{
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
+            break;
+            }
+        
+        case 404:{
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+     content: Text(response['msg']??'Error',),
+backgroundColor: Colors.red,
+));
+        break;}
+
+        default:{
+          ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+     content: Text(response['msg']??'Error'),
+backgroundColor: Colors.red,
+));
+}
+        
+  }
+  });}catch(e)
+  {
+      ScaffoldMessenger.of(context).showSnackBar( const SnackBar(
+     content: Text('There is some problem loading Data.'),
+));
+  }
   }
 
   @override

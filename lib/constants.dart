@@ -10,4 +10,7 @@ class Constants{
     const Color(0xff9EFFFF),
     const Color(0xffB69CFF),
   ];
+
+  static String ip = '10.0.2.2';
+  static String port = '3000';
 }

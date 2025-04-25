@@ -1,14 +1,22 @@
+import 'dart:convert';
+
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:recalling_code/Note.dart';
+import 'package:http/http.dart' as http;
+import 'package:recalling_code/constants.dart';
+
 
 class DBController {
   static Db? db;
 
-  static Future<void> connect() async {
+  connect() async {
     try {
-      db = await Db.create(
-          'mongodb+srv://user:user123@cluster0.cfknulu.mongodb.net/Notes');
-      await db!.open();
+  var url = Uri.http('${Constants.ip}:${Constants.port}','/');
+var response = await http.get(url);
+var body = json.decode( response.body.toString());
+
+return body;
+
     } catch (e) {
       print('connection failed');
     }

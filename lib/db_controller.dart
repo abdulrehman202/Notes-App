@@ -78,10 +78,17 @@ class DBController {
 
   Future<bool> deleteNote(Note note) async {
     try {
-      final collection = await db?.collection('notes collection');
+      var url = Uri.parse('http://${Constants.ip}:${Constants.port}/remove');
+      var response = await http.delete(url,
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode(
+              {'id': note.id}));
+      var resCode = json.decode(response.body.toString())['code'];
 
-      await collection?.deleteOne({'_id': ObjectId.parse(note.id)});
-      return true;
+      return resCode == 200;
     } catch (e) {
       return false;
     }

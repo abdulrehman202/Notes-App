@@ -19,8 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool searchMode = false;
-  final List<Note> _notesList = [
-  ];
+  final List<Note> _notesList = [];
   final _notesStreamController = StreamController<List<Note>>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
@@ -37,54 +36,47 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Widget newNoteDialog()
-  {
-    return DialogContainer(dialogContent: [TextField(
-                                  controller: _titleController,
-                                  decoration: const InputDecoration(
-                                    label: Text(
-                                      'Add Title',
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 20),
-                                    alignment: Alignment.topCenter,
-                                    height: 200,
-                                    child: TextFormField(
-                                      controller: _textController,
-                                      maxLines: 20,
-                                      decoration: const InputDecoration(
-                                          label: Text(
-                                            'Write a note',
-                                            textAlign: TextAlign.start,
-                                          ),
-                                          border: OutlineInputBorder(),
-                                          hintMaxLines: 20),
-                                    )),
-                                FilledButton(
-                                    onPressed: () async {
-                                      Note note = Note(
-                                        '-1',
-                                          _titleController.text,
-                                          _textController.text,
-                                          Random().nextInt(6));
-                                         await _dbController.insert(note);
-                                         setState(() {
-                                           
-                                         });
-                                      _titleController.clear();
-                                      _textController.clear();
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Add note'))]);
-                  
+  Widget newNoteDialog() {
+    return DialogContainer(dialogContent: [
+      TextField(
+        controller: _titleController,
+        decoration: const InputDecoration(
+          label: Text(
+            'Add Title',
+          ),
+        ),
+      ),
+      Container(
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          alignment: Alignment.topCenter,
+          height: 200,
+          child: TextFormField(
+            controller: _textController,
+            maxLines: 20,
+            decoration: const InputDecoration(
+                label: Text(
+                  'Write a note',
+                  textAlign: TextAlign.start,
+                ),
+                border: OutlineInputBorder(),
+                hintMaxLines: 20),
+          )),
+      FilledButton(
+          onPressed: () async {
+            Note note = Note('-1', _titleController.text, _textController.text,
+                Random().nextInt(6));
+            await _dbController.insert(note);
+            setState(() {});
+            _titleController.clear();
+            _textController.clear();
+            Navigator.pop(context);
+          },
+          child: const Text('Add note'))
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final _stream = _notesStreamController.stream;
     _notesList.clear();
     _notesStreamController.sink.add(_notesList);
@@ -106,7 +98,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: searchMode
             ? TextField(
-              focusNode: _focusNode,
+                focusNode: _focusNode,
                 controller: _filterController,
                 onChanged: (value) {
                   List<Note> filteredList = [];
@@ -165,60 +157,73 @@ class _HomePageState extends State<HomePage> {
               ],
       ),
       body: FutureBuilder(
-        future: _dbController.fetchAllNotes(), 
-        builder: (context, AsyncSnapshot<List<Note>> snapshot) {
-          _notesList.clear();
-          _notesList.addAll(snapshot.data??[]);
-          switch (snapshot.connectionState){
-          
-          case ConnectionState.waiting: const Center(child: CircularProgressIndicator( color: Colors.white,));
-          default: _notesStreamController.add(snapshot.data??[]);}
+          future: _dbController.fetchAllNotes(),
+          builder: (context, AsyncSnapshot<List<Note>> snapshot) {
+            _notesList.clear();
+            _notesList.addAll(snapshot.data ?? []);
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                const Center(
+                    child: CircularProgressIndicator(
+                  color: Colors.white,
+                ));
+              default:
+                _notesStreamController.add(snapshot.data ?? []);
+            }
 
-          return StreamBuilder<List<Note>>(
-            stream: _stream,
-            builder: (context, snapshot) {
-              List<Note> tempList = snapshot.data?.toList() ?? [];
-              return tempList.isNotEmpty
-                  ?  ListView.builder(
-                    
-                      itemCount: tempList.length,
-                      itemBuilder: (context, index) {
-                        return  GestureDetector(
-                          onLongPress: () async {
-                           await showDialog(context: context, builder: (context)=>ConfirmationDialog(msg: 'Do you want to delete this note?', yesCB: (){_dbController.deleteNote(tempList[index]);_filterController.clear(); searchMode = false; Navigator.pop(context);setState(() {
-                            
-                          });}, noCB: (){Navigator.pop(context);}));
-                          
-                          },
-                          onTap: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditScreen(note:tempList[index])))
-                                    ;
-                                    setState(() {
-                                      
-                                    });
-                          },
-                          child: NoteCard(note: tempList[index]),
-                        );
-                      },
-                    )
-                  : Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/empty.png'),
-                    Text(
-              'No Note found!',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            FilledButton(onPressed: _dbController.fetchAllNotes, child: Text('Try again'))
-                    ],
-                  ),);
-            },
-          );
-        }
-      ),
+            return StreamBuilder<List<Note>>(
+              stream: _stream,
+              builder: (context, snapshot) {
+                List<Note> tempList = snapshot.data?.toList() ?? [];
+                return tempList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: tempList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onLongPress: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) => ConfirmationDialog(
+                                      msg: 'Do you want to delete this note?',
+                                      yesCB: () {
+                                        _dbController
+                                            .deleteNote(tempList[index]);
+                                        _filterController.clear();
+                                        searchMode = false;
+                                        Navigator.pop(context);
+                                        setState(() {});
+                                      },
+                                      noCB: () {
+                                        Navigator.pop(context);
+                                      }));
+                            },
+                            onTap: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditScreen(note: tempList[index])));
+                              setState(() {});
+                            },
+                            child: NoteCard(note: tempList[index]),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/empty.png'),
+                            Text(
+                              'No Note found!',
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
+                          ],
+                        ),
+                      );
+              },
+            );
+          }),
     );
   }
 }

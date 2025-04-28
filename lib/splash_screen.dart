@@ -9,46 +9,69 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   void initState() {
     super.initState();
     tryToConnect();
   }
 
-  tryToConnect() async
-  {
-    try{
-    await DBController().connect().then((response){
+  errorMsg(String msg) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(days: 365),
+      content: SizedBox(
+        height: 40,
+        child: Row(
+          children: [
+            Text(
+              msg ?? 'Error',
+            ),
+            TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  tryToConnect();
+                },
+                child: Text(
+                  'Try Again',
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(fontSize: 15, color: Colors.black),
+                ))
+          ],
+        ),
+      ),
+      backgroundColor: Colors.red,
+    ));
+  }
 
-      switch(response['code']){
-        case 200:{
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const HomePage()));
-            break;
+  tryToConnect() async {
+    try {
+      await DBController().connect().then((response) {
+        switch (response['code']) {
+          case 200:
+            {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const HomePage()));
+              break;
             }
-        
-        case 404:{
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-     content: Text(response['msg']??'Error',),
-backgroundColor: Colors.red,
-));
-        break;}
 
-        default:{
-          ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-     content: Text(response['msg']??'Error'),
-backgroundColor: Colors.red,
-));
-}
-        
-  }
-  });}catch(e)
-  {
-      ScaffoldMessenger.of(context).showSnackBar( const SnackBar(
-     content: Text('There is some problem loading Data.'),
-));
-  }
+          case 404:
+            {
+              errorMsg(response['msg']);
+              break;
+            }
+
+          default:
+            {
+              errorMsg(response['msg']);
+            }
+        }
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('There is some problem loading Data.'),
+      ));
+    }
   }
 
   @override

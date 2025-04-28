@@ -22,17 +22,17 @@ class DBController {
 
   Future<bool> insert(Note note) async {
     try {
-      final collection = db?.collection('notes collection');
+      var url = Uri.parse('http://${Constants.ip}:${Constants.port}/insert');
+      var response = await http.post(url,
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode(
+              {'title': note.title, 'text': note.text, 'color': note.color}));
+      var resCode = json.decode(response.body.toString())['code'];
 
-      final documentToInsert = {
-        'id': note.id,
-        'title': note.title,
-        'text': note.text,
-        'color': note.color,
-      };
-
-      await collection?.insert(documentToInsert);
-      return true;
+      return resCode == 200;
     } catch (e) {
       return false;
     }
@@ -45,7 +45,7 @@ class DBController {
       var response = await http.get(url);
       var body = json.decode(response.body.toString())['msg'];
 
-      body.forEach((note)=>notes.add(Note.fromJson(note)));
+      body.forEach((note) => notes.add(Note.fromJson(note)));
 
       return notes;
     } catch (e) {

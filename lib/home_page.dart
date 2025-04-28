@@ -212,6 +212,7 @@ class _HomePageState extends State<HomePage> {
               'No Note found!',
               style: Theme.of(context).textTheme.displaySmall,
             ),
+            FilledButton(onPressed: _dbController.fetchAllNotes, child: Text('Try again'))
                     ],
                   ),);
             },

@@ -41,7 +41,7 @@ class Note{
 
   factory Note.fromJson(Map<String, dynamic> parsedJson){
     return Note(
-       parsedJson['_id'].oid,
+       parsedJson['objId'],
       parsedJson['title'],
       parsedJson['text'],
       parsedJson ['color']

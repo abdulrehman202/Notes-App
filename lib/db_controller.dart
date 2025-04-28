@@ -5,18 +5,16 @@ import 'package:recalling_code/Note.dart';
 import 'package:http/http.dart' as http;
 import 'package:recalling_code/constants.dart';
 
-
 class DBController {
   static Db? db;
 
   connect() async {
     try {
-  var url = Uri.http('${Constants.ip}:${Constants.port}','/');
-var response = await http.get(url);
-var body = json.decode( response.body.toString());
+      var url = Uri.http('${Constants.ip}:${Constants.port}', '/');
+      var response = await http.get(url);
+      var body = json.decode(response.body.toString());
 
-return body;
-
+      return body;
     } catch (e) {
       print('connection failed');
     }
@@ -27,7 +25,7 @@ return body;
       final collection = db?.collection('notes collection');
 
       final documentToInsert = {
-        'id':note.id,
+        'id': note.id,
         'title': note.title,
         'text': note.text,
         'color': note.color,
@@ -41,49 +39,50 @@ return body;
   }
 
   Future<List<Note>> fetchAllNotes() async {
+    List<Note> notes = [];
     try {
-      List<Note> list = [];
-      final docs = db?.collection('notes collection');
+      var url = Uri.http('${Constants.ip}:${Constants.port}', '/getAllNotes');
+      var response = await http.get(url);
+      var body = json.decode(response.body.toString())['msg'];
 
-      await docs?.find().forEach((note){
-        Note noteFromDB = Note.fromJson(note);
-        
-        list.add(noteFromDB);
-      });
-      return list;
+      body.forEach((note)=>notes.add(Note.fromJson(note)));
 
+      return notes;
     } catch (e) {
-      return [];
+      print('connection failed');
     }
+    return notes;
   }
 
-  Future<bool> updateNote(Note note) async{
-    try{
+  Future<bool> updateNote(Note note) async {
+    try {
       final collection = await db?.collection('notes collection');
 
-      final documentToUpdate = {'\$set':{
-        'id':note.id,
-        'title': note.title,
-        'text': note.text,
-        'color': note.color,
-      }};
+      final documentToUpdate = {
+        '\$set': {
+          'id': note.id,
+          'title': note.title,
+          'text': note.text,
+          'color': note.color,
+        }
+      };
 
-      await collection?.updateOne({'_id':ObjectId.parse(note.id)},documentToUpdate,upsert: false);
+      await collection?.updateOne(
+          {'_id': ObjectId.parse(note.id)}, documentToUpdate,
+          upsert: false);
       return true;
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
   }
 
-  Future<bool> deleteNote(Note note) async{
-    try{
+  Future<bool> deleteNote(Note note) async {
+    try {
       final collection = await db?.collection('notes collection');
 
-      await collection?.deleteOne({'_id':ObjectId.parse(note.id)});
+      await collection?.deleteOne({'_id': ObjectId.parse(note.id)});
       return true;
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
   }

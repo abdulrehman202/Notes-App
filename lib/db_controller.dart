@@ -56,21 +56,17 @@ class DBController {
 
   Future<bool> updateNote(Note note) async {
     try {
-      final collection = await db?.collection('notes collection');
+      var url = Uri.parse('http://${Constants.ip}:${Constants.port}/update');
+      var response = await http.put(url,
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode(
+              {'id':note.id,'title': note.title, 'text': note.text}));
+      var resCode = json.decode(response.body.toString())['code'];
 
-      final documentToUpdate = {
-        '\$set': {
-          'id': note.id,
-          'title': note.title,
-          'text': note.text,
-          'color': note.color,
-        }
-      };
-
-      await collection?.updateOne(
-          {'_id': ObjectId.parse(note.id)}, documentToUpdate,
-          upsert: false);
-      return true;
+      return resCode== 200;
     } catch (e) {
       return false;
     }

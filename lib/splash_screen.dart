@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recalling_code/account_screen.dart';
 
 import 'db_controller.dart';
 import 'home_page.dart';
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           case 200:
             {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const HomePage()));
+                  MaterialPageRoute(builder: (context) => const AccountSelect()));
               break;
             }
 
@@ -69,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('There is some problem loading Data.'),
+        content: Text('Unable to connect to server'),
       ));
     }
   }

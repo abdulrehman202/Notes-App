@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recalling_code/signup_screen.dart';
 import 'splash_screen.dart';
 
 void main() => runApp(MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green, 
         filledButtonTheme: const FilledButtonThemeData(style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Color(0xff252525))))
       ), 
-      home: MyHomePage(), 
+      home: SignUpScreen(), 
       debugShowCheckedModeBanner: false, 
     ); 
   } 

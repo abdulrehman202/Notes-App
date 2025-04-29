@@ -13,4 +13,5 @@ class Constants{
 
   static String ip = '10.0.2.2';
   static String port = '3000';
-}
+  static RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  }

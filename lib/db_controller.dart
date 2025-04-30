@@ -22,6 +22,7 @@ class DBController {
 
   Future<bool> insert(Note note) async {
     try {
+      var email = 'abdulrehman1411@gmail.com';
       var url = Uri.parse('http://${Constants.ip}:${Constants.port}/insert');
       var response = await http.post(url,
           headers: {
@@ -29,7 +30,7 @@ class DBController {
             'Accept': 'application/json',
           },
           body: json.encode(
-              {'title': note.title, 'text': note.text, 'color': note.color}));
+              {'title': note.title, 'text': note.text, 'color': note.color, 'email':email}));
       var resCode = json.decode(response.body.toString())['code'];
 
       return resCode == 200;
@@ -41,7 +42,8 @@ class DBController {
   Future<List<Note>> fetchAllNotes() async {
     List<Note> notes = [];
     try {
-      var url = Uri.http('${Constants.ip}:${Constants.port}', '/getAllNotes');
+      String user = 'abdulrehman1411@gmail.com';
+      var url = Uri.http('${Constants.ip}:${Constants.port}', '/getAllNotes/$user');
       var response = await http.get(url);
       var body = json.decode(response.body.toString())['msg'];
 

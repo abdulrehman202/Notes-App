@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   moveToLoginScreen() {
-    Navigator.push(
+    Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (builder) => SignInScreen()));
   }
 
@@ -76,9 +76,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                   width: double.infinity,
                   child:registerButton()),
-              SizedBox(
-                  width: double.infinity,
-                  child: signInButton()),
             ],
           )),
       body: SafeArea(
@@ -112,6 +109,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             txtField(_cfmPasswordFocus, _cfmPasswordTextEditingController,
                 'Confirm Password',
                 isEmail: false),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: 
+            [
+              Text('Already have an account?',style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white, fontSize: 15),),
+              TextButton(onPressed: moveToLoginScreen, child: Text('Sign In',style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold)))
+            ],)
           ],
         ),
       )),

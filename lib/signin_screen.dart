@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:recalling_code/constants.dart';
 import 'package:recalling_code/home_page.dart';
+import 'package:recalling_code/signup_screen.dart';
 import 'package:recalling_code/splash_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -27,11 +28,20 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
+  moveToSignUpScreen() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (builder) => SignUpScreen()));
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      bottomNavigationBar: Container(
+          margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          width: MediaQuery.of(context).size.width*.9,
+                  child: FilledButton(onPressed: checkCredentialsAndLogin,style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder( borderRadius: BorderRadius.circular(10) )), backgroundColor: const WidgetStatePropertyAll(Colors.white)), child: const Text('Sign In',style: TextStyle(color: Colors.black),))),
+              
       body: SafeArea(child: SingleChildScrollView(
         child: Center(
           child: SizedBox(
@@ -52,10 +62,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 txtField(_emailFocus, _emailTextEditingController,'Email Address'),
                 txtField(_passwordFocus, _passwordTextEditingController, 'Password',isEmail: false),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(onPressed: checkCredentialsAndLogin,style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder( borderRadius: BorderRadius.circular(10) )), backgroundColor: const WidgetStatePropertyAll(Colors.white)), child: const Text('Sign In',style: TextStyle(color: Colors.black),))),
-              ],
+                Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: 
+            [
+              Text('Don''\'t have an account? ',style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white, fontSize: 15),),
+              TextButton(onPressed: moveToSignUpScreen, child: Text('Register',style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold)))
+            ],),
+                ],
             ),
           ),
         ),

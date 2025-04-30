@@ -89,4 +89,42 @@ class DBController {
       return false;
     }
   }
+
+  registerUser(String email, String password)
+  async {
+    try {
+      var url = Uri.parse('http://${Constants.ip}:${Constants.port}/registerUser');
+      var response = await http.post(url,
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode(
+              {'email': email, 'password': password}));
+      var resCode = json.decode(response.body.toString())['code'];
+
+      return resCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  login(String email, String password) async {
+    try {
+      var url = Uri.http('${Constants.ip}:${Constants.port}', '/login');
+      var response = await http.post(url,
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode(
+              {'email': email, 'password': password}));
+
+      var resCode = json.decode(response.body.toString())['code'];
+
+      return resCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
 }

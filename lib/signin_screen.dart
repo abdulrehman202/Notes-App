@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:recalling_code/constants.dart';
+import 'package:recalling_code/db_controller.dart';
 import 'package:recalling_code/home_page.dart';
 import 'package:recalling_code/signup_screen.dart';
 import 'package:recalling_code/splash_screen.dart';
@@ -17,6 +18,7 @@ class _SignInScreenState extends State<SignInScreen> {
   
   TextEditingController _emailTextEditingController = TextEditingController(), _passwordTextEditingController = TextEditingController();
   FocusNode _emailFocus = FocusNode(), _passwordFocus = FocusNode();
+  DBController _dbController = DBController();
 
   @override
   void dispose() {
@@ -89,9 +91,20 @@ class _SignInScreenState extends State<SignInScreen> {
     else login();
   }
 
-  login()
+  login() async
   {
+
+    bool loginSuccess = await _dbController.login(_emailTextEditingController.text, _passwordTextEditingController.text);
+
+    if(loginSuccess)
+    {
+      _emailTextEditingController.text = '';
+      _passwordTextEditingController.text = '';
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+    }
+
+    else {ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Invalid Credentials')));}
   }
 
   Widget txtField(FocusNode focus, TextEditingController controller,String hint, {bool isEmail = true})

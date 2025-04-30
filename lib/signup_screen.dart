@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recalling_code/constants.dart';
+import 'package:recalling_code/db_controller.dart';
 import 'package:recalling_code/signin_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -16,6 +17,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode _emailFocus = FocusNode(),
       _passwordFocus = FocusNode(),
       _cfmPasswordFocus = FocusNode();
+
+      
+  final DBController _dbController = DBController();
 
   @override
   void dispose() {
@@ -137,9 +141,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       registerUser();
   }
 
-  registerUser() {
+  registerUser() async{
+    
+    bool registered = await _dbController.registerUser(_emailTextEditingController.text, _passwordTextEditingController.text);
+    String msg = 'User not registered';
+
+    if(registered)
+    {
+      msg = 'User registered';
+      _emailTextEditingController.text = '';
+      _passwordTextEditingController.text = '';
+      _cfmPasswordTextEditingController.text = '';
+      moveToLoginScreen();
+    }
+
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('User Registered')));
+        .showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Widget txtField(

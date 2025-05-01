@@ -9,6 +9,8 @@ import 'package:recalling_code/Widgets/DialogContainer.dart';
 import 'package:recalling_code/Widgets/NoteCard.dart';
 import 'package:recalling_code/db_controller.dart';
 import 'package:recalling_code/edit_screen.dart';
+import 'package:recalling_code/signin_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -96,6 +98,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       appBar: AppBar(
+        leading: Container(),
         title: searchMode
             ? TextField(
                 focusNode: _focusNode,
@@ -154,6 +157,14 @@ class _HomePageState extends State<HomePage> {
                           });
                     },
                     icon: const Icon(Icons.info_outline_rounded)),
+              IconButton(
+                    onPressed: () async{
+                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('email','');
+      
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>SignInScreen()));
+                    },
+                    icon: const Icon(Icons.logout)),
               ],
       ),
       body: FutureBuilder(

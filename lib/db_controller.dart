@@ -4,6 +4,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:recalling_code/Note.dart';
 import 'package:http/http.dart' as http;
 import 'package:recalling_code/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DBController {
   static Db? db;
@@ -22,7 +23,8 @@ class DBController {
 
   Future<bool> insert(Note note) async {
     try {
-      var email = 'abdulrehman1411@gmail.com';
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String email = prefs.getString('email')??'';
       var url = Uri.parse('http://${Constants.ip}:${Constants.port}/insert');
       var response = await http.post(url,
           headers: {
@@ -42,7 +44,8 @@ class DBController {
   Future<List<Note>> fetchAllNotes() async {
     List<Note> notes = [];
     try {
-      String user = 'abdulrehman1411@gmail.com';
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String user = prefs.getString('email')??'';
       var url = Uri.http('${Constants.ip}:${Constants.port}', '/getAllNotes/$user');
       var response = await http.get(url);
       var body = json.decode(response.body.toString())['msg'];

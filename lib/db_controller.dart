@@ -24,15 +24,19 @@ class DBController {
   Future<bool> insert(Note note) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      String email = prefs.getString('email')??'';
+      String email = prefs.getString('email') ?? '';
       var url = Uri.parse('http://${Constants.ip}:${Constants.port}/insert');
       var response = await http.post(url,
           headers: {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           },
-          body: json.encode(
-              {'title': note.title, 'text': note.text, 'color': note.color, 'email':email}));
+          body: json.encode({
+            'title': note.title,
+            'text': note.text,
+            'color': note.color,
+            'email': email
+          }));
       var resCode = json.decode(response.body.toString())['code'];
 
       return resCode == 200;
@@ -45,8 +49,9 @@ class DBController {
     List<Note> notes = [];
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      String user = prefs.getString('email')??'';
-      var url = Uri.http('${Constants.ip}:${Constants.port}', '/getAllNotes/$user');
+      String user = prefs.getString('email') ?? '';
+      var url =
+          Uri.http('${Constants.ip}:${Constants.port}', '/getAllNotes/$user');
       var response = await http.get(url);
       var body = json.decode(response.body.toString())['msg'];
 
@@ -67,11 +72,11 @@ class DBController {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           },
-          body: json.encode(
-              {'id':note.id,'title': note.title, 'text': note.text}));
+          body: json
+              .encode({'id': note.id, 'title': note.title, 'text': note.text}));
       var resCode = json.decode(response.body.toString())['code'];
 
-      return resCode== 200;
+      return resCode == 200;
     } catch (e) {
       return false;
     }
@@ -85,8 +90,7 @@ class DBController {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           },
-          body: json.encode(
-              {'id': note.id}));
+          body: json.encode({'id': note.id}));
       var resCode = json.decode(response.body.toString())['code'];
 
       return resCode == 200;
@@ -95,17 +99,16 @@ class DBController {
     }
   }
 
-  registerUser(String email, String password)
-  async {
+  registerUser(String email, String password) async {
     try {
-      var url = Uri.parse('http://${Constants.ip}:${Constants.port}/registerUser');
+      var url =
+          Uri.parse('http://${Constants.ip}:${Constants.port}/registerUser');
       var response = await http.post(url,
           headers: {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           },
-          body: json.encode(
-              {'email': email, 'password': password}));
+          body: json.encode({'email': email, 'password': password}));
       var resCode = json.decode(response.body.toString())['code'];
 
       return resCode == 200;
@@ -122,8 +125,7 @@ class DBController {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           },
-          body: json.encode(
-              {'email': email, 'password': password}));
+          body: json.encode({'email': email, 'password': password}));
 
       var resCode = json.decode(response.body.toString())['code'];
 

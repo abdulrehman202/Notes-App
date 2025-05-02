@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:recalling_code/Widgets/ConfirmationDialog.dart';
-import 'package:recalling_code/Widgets/DialogContainer.dart';
 import 'package:recalling_code/db_controller.dart';
 
 import 'Note.dart';
@@ -31,14 +30,18 @@ class _EditScreenState extends State<EditScreen> {
     super.dispose();
   }
 
-  Widget _YesNoButton(String txt, VoidCallback doThis, Color color)
-  {
+  Widget _YesNoButton(String txt, VoidCallback doThis, Color color) {
     return Container(
       decoration: BoxDecoration(
         color: color,
       ),
       height: 50,
-      child: TextButton(onPressed: doThis, child: Text(txt, style: TextStyle(color: Colors.black),)),
+      child: TextButton(
+          onPressed: doThis,
+          child: Text(
+            txt,
+            style: const TextStyle(color: Colors.black),
+          )),
     );
   }
 
@@ -50,16 +53,30 @@ class _EditScreenState extends State<EditScreen> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-
-              if(_isCHanged) {
-                showDialog(context: context, builder: (context)=> ConfirmationDialog(msg:'Do you want to save changes?', yesCB: (){DBController().updateNote(Note(widget.note.id,_headingEditControlller.text,_noteEditControlller.text,widget.note.color)).then((updated){if(updated)Navigator.pop(context);Navigator.pop(context);});},
-noCB: (){
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  }));
-              
+              if (_isCHanged) {
+                showDialog(
+                    context: context,
+                    builder: (context) => ConfirmationDialog(
+                        msg: 'Do you want to save changes?',
+                        yesCB: () {
+                          DBController()
+                              .updateNote(Note(
+                                  widget.note.id,
+                                  _headingEditControlller.text,
+                                  _noteEditControlller.text,
+                                  widget.note.color))
+                              .then((updated) {
+                            if (updated) Navigator.pop(context);
+                            Navigator.pop(context);
+                          });
+                        },
+                        noCB: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        }));
+              } else {
+                Navigator.pop(context);
               }
-              else Navigator.pop(context);
             },
             icon: const Icon(
               Icons.backspace_outlined,
@@ -76,7 +93,6 @@ noCB: (){
                 TextField(
                   onChanged: (value) => _isCHanged = true,
                   contextMenuBuilder: (context, editableTextState) {
-                    
                     return AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: editableTextState.contextMenuAnchors,
                       buttonItems: editableTextState.contextMenuButtonItems,
@@ -91,7 +107,7 @@ noCB: (){
                       ),
                   cursorColor: Colors.white,
                   focusNode: _focusNode,
-                  decoration: InputDecoration(border: InputBorder.none),
+                  decoration: const InputDecoration(border: InputBorder.none),
                 ),
                 const Divider(
                   color: Color.fromARGB(85, 224, 224, 224),
@@ -99,7 +115,6 @@ noCB: (){
                 TextField(
                   onChanged: (value) => _isCHanged = true,
                   contextMenuBuilder: (context, editableTextState) {
-                    
                     return AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: editableTextState.contextMenuAnchors,
                       buttonItems: editableTextState.contextMenuButtonItems,
@@ -114,7 +129,7 @@ noCB: (){
                       ),
                   cursorColor: Colors.white,
                   focusNode: _focusNode2,
-                  decoration: InputDecoration(border: InputBorder.none),
+                  decoration: const InputDecoration(border: InputBorder.none),
                 ),
               ],
             ),

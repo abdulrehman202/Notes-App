@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:recalling_code/account_screen.dart';
 
 import 'db_controller.dart';
-import 'home_page.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -51,8 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
         switch (response['code']) {
           case 200:
             {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const AccountSelect()));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AccountSelect()));
               break;
             }
 

@@ -18,7 +18,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _passwordFocus = FocusNode(),
       _cfmPasswordFocus = FocusNode();
 
-      
   final DBController _dbController = DBController();
 
   @override
@@ -38,34 +37,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
         context, MaterialPageRoute(builder: (builder) => SignInScreen()));
   }
 
-  registerButton()
-  {
-    return  FilledButton(
-                      onPressed: checkCredentialsAndRegister,
-                      style: ButtonStyle(
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.white)),
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(color: Colors.black),
-                      ));
+  registerButton() {
+    return FilledButton(
+        onPressed: checkCredentialsAndRegister,
+        style: ButtonStyle(
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
+            backgroundColor: const WidgetStatePropertyAll(Colors.white)),
+        child: const Text(
+          'Register',
+          style: TextStyle(color: Colors.black),
+        ));
   }
 
-  signInButton()
-  {
+  signInButton() {
     return FilledButton(
-                      onPressed: moveToLoginScreen,
-                      style: ButtonStyle(
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.white)),
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(color: Colors.black),
-                      ));
+        onPressed: moveToLoginScreen,
+        style: ButtonStyle(
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
+            backgroundColor: const WidgetStatePropertyAll(Colors.white)),
+        child: const Text(
+          'Sign In',
+          style: TextStyle(color: Colors.black),
+        ));
   }
 
   @override
@@ -73,13 +68,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       bottomNavigationBar: Container(
           margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          width: MediaQuery.of(context).size.width*.9,
+          width: MediaQuery.of(context).size.width * .9,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                  width: double.infinity,
-                  child:registerButton()),
+              SizedBox(width: double.infinity, child: registerButton()),
             ],
           )),
       body: SafeArea(
@@ -115,11 +108,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 isEmail: false),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: 
-            [
-              Text('Already have an account?',style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white, fontSize: 15),),
-              TextButton(onPressed: moveToLoginScreen, child: Text('Sign In',style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold)))
-            ],)
+              children: [
+                Text(
+                  'Already have an account?',
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall!
+                      .copyWith(color: Colors.white, fontSize: 15),
+                ),
+                TextButton(
+                    onPressed: moveToLoginScreen,
+                    child: Text('Sign In',
+                        style: Theme.of(context)
+                            .textTheme
+                            .displaySmall!
+                            .copyWith(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold)))
+              ],
+            )
           ],
         ),
       )),
@@ -141,13 +149,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       registerUser();
   }
 
-  registerUser() async{
-    
-    bool registered = await _dbController.registerUser(_emailTextEditingController.text, _passwordTextEditingController.text);
+  registerUser() async {
+    bool registered = await _dbController.registerUser(
+        _emailTextEditingController.text, _passwordTextEditingController.text);
     String msg = 'User not registered';
 
-    if(registered)
-    {
+    if (registered) {
       msg = 'User registered';
       _emailTextEditingController.text = '';
       _passwordTextEditingController.text = '';
@@ -155,8 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       moveToLoginScreen();
     }
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Widget txtField(

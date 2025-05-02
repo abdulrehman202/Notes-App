@@ -10,7 +10,6 @@ class AccountSelect extends StatefulWidget {
 }
 
 class _AccountSelectState extends State<AccountSelect> {
-  
   @override
   void dispose() {
     // TODO: implement dispose
@@ -27,34 +26,30 @@ class _AccountSelectState extends State<AccountSelect> {
         context, MaterialPageRoute(builder: (builder) => SignUpScreen()));
   }
 
-  registerButton()
-  {
-    return  FilledButton(
-                      onPressed: moveToSignUpScreen,
-                      style: ButtonStyle(
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.white)),
-                      child: const Text(
-                        'I am new User',
-                        style: TextStyle(color: Colors.black),
-                      ));
+  registerButton() {
+    return FilledButton(
+        onPressed: moveToSignUpScreen,
+        style: ButtonStyle(
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
+            backgroundColor: const WidgetStatePropertyAll(Colors.white)),
+        child: const Text(
+          'I am new User',
+          style: TextStyle(color: Colors.black),
+        ));
   }
 
-  signInButton()
-  {
+  signInButton() {
     return FilledButton(
-                      onPressed: moveToLoginScreen,
-                      style: ButtonStyle(
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.white)),
-                      child: const Text(
-                        'I already have an account',
-                        style: TextStyle(color: Colors.black),
-                      ));
+        onPressed: moveToLoginScreen,
+        style: ButtonStyle(
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
+            backgroundColor: const WidgetStatePropertyAll(Colors.white)),
+        child: const Text(
+          'I already have an account',
+          style: TextStyle(color: Colors.black),
+        ));
   }
 
   @override
@@ -62,16 +57,12 @@ class _AccountSelectState extends State<AccountSelect> {
     return Scaffold(
       bottomNavigationBar: Container(
           margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          width: MediaQuery.of(context).size.width*.9,
+          width: MediaQuery.of(context).size.width * .9,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                  width: double.infinity,
-                  child:registerButton()),
-              SizedBox(
-                  width: double.infinity,
-                  child: signInButton()),
+              SizedBox(width: double.infinity, child: registerButton()),
+              SizedBox(width: double.infinity, child: signInButton()),
             ],
           )),
       body: Center(
@@ -90,6 +81,4 @@ class _AccountSelectState extends State<AccountSelect> {
       ),
     );
   }
-
-  
-  }
+}

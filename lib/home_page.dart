@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 import 'package:recalling_code/Note.dart';
 import 'package:recalling_code/Widgets/ConfirmationDialog.dart';
 import 'package:recalling_code/Widgets/DialogContainer.dart';
@@ -151,18 +150,20 @@ class _HomePageState extends State<HomePage> {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return Container(
-                              child: Image.asset('assets/images/info.png'),
-                            );
+                            return Image.asset('assets/images/info.png');
                           });
                     },
                     icon: const Icon(Icons.info_outline_rounded)),
-              IconButton(
-                    onPressed: () async{
-                      final SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setString('email','');
-      
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>SignInScreen()));
+                IconButton(
+                    onPressed: () async {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('email', '');
+
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => SignInScreen()));
                     },
                     icon: const Icon(Icons.logout)),
               ],

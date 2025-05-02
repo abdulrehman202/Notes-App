@@ -1,8 +1,7 @@
 import 'dart:ui';
 
-class Constants{
+class Constants {
   static List<Color> CARD_COLORS = [
-    
     const Color(0xffFD99FF),
     const Color(0xffFF9E9E),
     const Color(0xff91F48F),
@@ -13,5 +12,6 @@ class Constants{
 
   static String ip = '10.0.2.2';
   static String port = '3000';
-  static RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  }
+  static RegExp emailRegex = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+}

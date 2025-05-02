@@ -1,11 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:recalling_code/constants.dart';
 import 'package:recalling_code/db_controller.dart';
 import 'package:recalling_code/home_page.dart';
 import 'package:recalling_code/signup_screen.dart';
-import 'package:recalling_code/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -33,7 +30,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   moveToSignUpScreen() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (builder) => SignUpScreen()));
+        context, MaterialPageRoute(builder: (builder) => const SignUpScreen()));
   }
 
   @override
@@ -112,14 +109,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
     if (!validEmail) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Invalid Email')));
+          .showSnackBar(const SnackBar(content: Text('Invalid Email')));
     } else
       login();
   }
 
   login() async {
     try {
-      SharedPreferences.setMockInitialValues({});
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('email', _emailTextEditingController.text);
       bool loginSuccess = await _dbController.login(
@@ -133,11 +129,11 @@ class _SignInScreenState extends State<SignInScreen> {
             context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Invalid Credentials')));
+            .showSnackBar(const SnackBar(content: Text('Invalid Credentials')));
       }
     } catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Try Again')));
+          .showSnackBar(const SnackBar(content: const Text('Try Again')));
     }
   }
 
@@ -145,7 +141,7 @@ class _SignInScreenState extends State<SignInScreen> {
       FocusNode focus, TextEditingController controller, String hint,
       {bool isEmail = true}) {
     return Container(
-      margin: EdgeInsets.only(top: 20, bottom: 20),
+      margin: const EdgeInsets.only(top: 20, bottom: 20),
       child: TextField(
         style: const TextStyle(color: Colors.white),
         textInputAction: TextInputAction.next,
@@ -155,13 +151,13 @@ class _SignInScreenState extends State<SignInScreen> {
             : TextInputType.visiblePassword,
         cursorColor: Colors.white,
         decoration: InputDecoration(
-            focusedBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+            focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white)),
             fillColor: Colors.white,
             focusColor: Colors.white,
             label: Text(
               hint,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             hintStyle: const TextStyle(color: Colors.white)),
         controller: controller,
